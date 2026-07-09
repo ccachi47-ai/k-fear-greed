@@ -1,0 +1,48 @@
+{
+  "updated": "2026-07-09 14:28",
+  "score": null,
+  "label": null,
+  "indicators": {
+    "momentum": {
+      "name": "시장 모멘텀 (코스피 vs 125일선)",
+      "score": null,
+      "detail": null
+    },
+    "strength": {
+      "name": "주가 강도 (52주 신고/신저)",
+      "score": null,
+      "detail": null
+    },
+    "breadth": {
+      "name": "시장 폭 (ADR 20일)",
+      "score": null,
+      "detail": null
+    },
+    "putcall": {
+      "name": "풋/콜 비율 (K200 옵션)",
+      "score": null,
+      "detail": null
+    },
+    "vol": {
+      "name": "변동성 (VKOSPI vs 50일 평균)",
+      "score": null,
+      "detail": null
+    },
+    "safehaven": {
+      "name": "안전자산 수요 (주식 vs 국채)",
+      "score": null,
+      "detail": null
+    },
+    "credit": {
+      "name": "크레딧 스프레드 (BBB- - 국고3년)",
+      "score": null,
+      "detail": null
+    },
+    "foreign": {
+      "name": "외국인 수급 (20일 누적)",
+      "score": null,
+      "detail": null
+    }
+  },
+  "history": []
+}
