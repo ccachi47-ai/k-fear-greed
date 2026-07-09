@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한국시장 공포·탐욕지수</title>
+<style>
+  :root {
+    --bg:#0D1017; --card:#12161F; --line:#1E2532; --text:#E8EBF2;
+    --muted:#7C8299; --dim:#5E6478;
+    --fear-x:#3D6BFF; --fear:#6E93F5; --neu:#8A8FA3; --greed:#F0766B; --greed-x:#F0424E;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text); padding:24px 14px 60px;
+    font-family:-apple-system,"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  .wrap { max-width:560px; margin:0 auto; }
+  .eyebrow { font-size:11px; letter-spacing:.25em; color:var(--muted); font-weight:600; text-align:center; }
+  h1 { font-size:24px; font-weight:800; margin:6px 0 2px; text-align:center; }
+  .sub { font-size:12px; color:var(--muted); text-align:center; }
+  .gaugebox { position:relative; }
+  svg.gauge { width:100%; max-width:380px; display:block; margin:0 auto; }
+  .scorebox { text-align:center; margin-top:-46px; }
+  .score { font-size:56px; font-weight:900; line-height:1; font-variant-numeric:tabular-nums; }
+  .label { font-size:18px; font-weight:700; margin-top:4px; }
+  .meta { font-size:11px; color:var(--muted); margin-top:6px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-top:12px; }
+  .card h2 { font-size:11px; letter-spacing:.15em; color:var(--muted); font-weight:600; margin:0 0 10px; }
+  .hist { display:flex; gap:5px; align-items:flex-end; height:64px; }
+  .hist .bar { flex:1; text-align:center; }
+  .hist .bar i { display:block; border-radius:4px; }
+  .hist .bar small { display:block; font-size:9px; color:var(--muted); margin-top:4px; }
+  .hist .bar b { font-size:10px; }
+  .ind { display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); gap:12px; }
+  .ind:last-child { border-bottom:none; }
+  .ind .nm { font-size:13px; font-weight:600; }
+  .ind .dt { font-size:11px; color:var(--muted); margin-top:2px; }
+  .ind .sc { font-size:18px; font-weight:800; min-width:56px; text-align:right; font-variant-numeric:tabular-nums; }
+  .ind .lb { font-size:10px; font-weight:600; text-align:right; }
+  .foot { font-size:11.5px; color:var(--dim); line-height:1.7; text-align:center; margin-top:22px; }
+  .err { text-align:center; color:var(--muted); padding:40px 0; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">K-FEAR &amp; GREED INDEX</div>
+  <h1>한국시장 공포·탐욕지수</h1>
+  <div class="sub" id="updated">불러오는 중…</div>
+
+  <div class="gaugebox">
+    <svg class="gauge" viewBox="0 0 320 170" id="gauge"></svg>
+    <div class="scorebox">
+      <div class="score" id="score">—</div>
+      <div class="label" id="label"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+
+  <div class="card" id="histcard" style="display:none">
+    <h2>지난 흐름</h2>
+    <div class="hist" id="hist"></div>
+  </div>
+
+  <div class="card">
+    <h2>구성 지표</h2>
+    <div id="inds"></div>
+  </div>
+
+  <div class="foot">
+    CNN Fear &amp; Greed 방법론을 한국시장 데이터로 치환한 지수입니다.
+    파랑은 공포(하락), 빨강은 탐욕(상승) — 한국식 색상 체계를 따릅니다.<br>
+    매 거래일 오후 4시 40분 자동 업데이트 · 데이터: KRX · 투자 판단의 참고 자료일 뿐 투자 권유가 아닙니다.
+  </div>
+</div>
+
+<script>
+const colorOf = s => s<25?'#3D6BFF':s<45?'#6E93F5':s<55?'#8A8FA3':s<75?'#F0766B':'#F0424E';
+const labelOf = s => s<25?'극단적 공포':s<45?'공포':s<55?'중립':s<75?'탐욕':'극단적 탐욕';
+
+function drawGauge(score){
+  const svg = document.getElementById('gauge');
+  const cx=160, cy=150, R=120, W=26;
+  const zones=[[0,25,'#3D6BFF'],[25,45,'#6E93F5'],[45,55,'#565B6E'],[55,75,'#F0766B'],[75,100,'#F0424E']];
+  const ang = s => Math.PI*(1-s/100);
+  const arc = (a,b)=>{
+    const a1=ang(a),a2=ang(b);
+    return `M ${cx+R*Math.cos(a1)} ${cy-R*Math.sin(a1)} A ${R} ${R} 0 0 1 ${cx+R*Math.cos(a2)} ${cy-R*Math.sin(a2)}`;
+  };
+  let html = zones.map(z=>`<path d="${arc(z[0]+.6,z[1]-.6)}" stroke="${z[2]}" stroke-width="${W}" fill="none"/>`).join('');
+  html += `<text x="30" y="166" fill="#7C8299" font-size="11" text-anchor="middle">0</text>
+           <text x="290" y="166" fill="#7C8299" font-size="11" text-anchor="middle">100</text>
+           <text x="52" y="62" fill="#6E93F5" font-size="11" font-weight="600" text-anchor="middle">공포</text>
+           <text x="268" y="62" fill="#F0766B" font-size="11" font-weight="600" text-anchor="middle">탐욕</text>`;
+  if(score!=null){
+    const a=ang(score), r2=R-W/2-14;
+    html += `<line x1="${cx}" y1="${cy}" x2="${cx+r2*Math.cos(a)}" y2="${cy-r2*Math.sin(a)}" stroke="#F5F6FA" stroke-width="3.5" stroke-linecap="round"/>
+             <circle cx="${cx}" cy="${cy}" r="7" fill="#F5F6FA"/>`;
+  }
+  svg.innerHTML = html;
+}
+
+async function load(){
+  try{
+    const res = await fetch('data.json?t='+Date.now());
+    const d = await res.json();
+    document.getElementById('updated').textContent = '마지막 업데이트 · ' + d.updated;
+
+    drawGauge(d.score);
+    if(d.score!=null){
+      const el=document.getElementById('score');
+      el.textContent=d.score; el.style.color=colorOf(d.score);
+      const lb=document.getElementById('label');
+      lb.textContent=d.label||labelOf(d.score); lb.style.color=colorOf(d.score);
+      const n=Object.values(d.indicators).filter(i=>i.score!=null).length;
+      document.getElementById('meta').textContent = n+'/8개 지표 반영 · 동일가중 평균';
+    }
+
+    // 히스토리
+    if(d.history && d.history.length){
+      document.getElementById('histcard').style.display='block';
+      document.getElementById('hist').innerHTML = d.history.slice(-14).map(h=>{
+        const dt = h.date.slice(5).replace('-','/');
+        return `<div class="bar"><i style="height:${Math.max(6,h.score*.5)}px;background:${colorOf(h.score)}"></i>
+                <small>${dt}</small><b style="color:${colorOf(h.score)}">${h.score}</b></div>`;
+      }).join('');
+    }
+
+    // 지표 목록
+    document.getElementById('inds').innerHTML = Object.values(d.indicators).map(i=>{
+      const has = i.score!=null;
+      return `<div class="ind">
+        <div><div class="nm">${i.name}</div><div class="dt">${has?(i.detail||''):'데이터 없음 (평균에서 제외)'}</div></div>
+        <div><div class="sc" style="color:${has?colorOf(i.score):'#4A4F60'}">${has?i.score:'—'}</div>
+        ${has?`<div class="lb" style="color:${colorOf(i.score)}">${labelOf(i.score)}</div>`:''}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('updated').textContent='';
+    document.querySelector('.wrap').insertAdjacentHTML('beforeend',
+      '<div class="err">data.json을 아직 찾을 수 없어요.<br>GitHub Actions를 한 번 실행하면 생성됩니다.</div>');
+  }
+}
+drawGauge(null);
+load();
+</script>
+</body>
+</html>
