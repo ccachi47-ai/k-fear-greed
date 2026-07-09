@@ -1,0 +1,39 @@
+name: 공포탐욕지수 자동 업데이트
+
+on:
+  schedule:
+    - cron: "40 7 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 의존성 설치
+        run: pip install pykrx
+
+      - name: 지수 계산
+        env:
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
+          ECOS_KEY: ${{ secrets.ECOS_KEY }}
+          ECOS_ITEM_GOV3: ${{ secrets.ECOS_ITEM_GOV3 }}
+          ECOS_ITEM_BBB3: ${{ secrets.ECOS_ITEM_BBB3 }}
+        run: python collector.py
+
+      - name: 결과 커밋
+        run: |
+          git config user.name "kfg-bot"
+          git config user.email "actions@github.com"
+          git add docs/data.json
+          git diff --cached --quiet || git commit -m "지수 업데이트 $(date +'%Y-%m-%d')"
+          git push
