@@ -19,12 +19,10 @@ jobs:
           python-version: "3.11"
 
       - name: 의존성 설치
-        run: pip install pykrx
+        run: pip install requests pandas lxml
 
       - name: 지수 계산
         env:
-          KRX_ID: ${{ secrets.KRX_ID }}
-          KRX_PW: ${{ secrets.KRX_PW }}
           ECOS_KEY: ${{ secrets.ECOS_KEY }}
           ECOS_ITEM_GOV3: ${{ secrets.ECOS_ITEM_GOV3 }}
           ECOS_ITEM_BBB3: ${{ secrets.ECOS_ITEM_BBB3 }}
