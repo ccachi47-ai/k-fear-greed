@@ -17,6 +17,16 @@ from datetime import datetime, timedelta
 
 from pykrx import stock
 
+# pykrx 라이브러리 내부 버그 우회: 지수 이름 조회 실패 시 무시하도록 패치
+import pykrx.stock.stock_api as _stock_api
+_orig_get_index_ticker_name = _stock_api.get_index_ticker_name
+def _safe_get_index_ticker_name(ticker):
+    try:
+        return _orig_get_index_ticker_name(ticker)
+    except Exception:
+        return ""
+_stock_api.get_index_ticker_name = _safe_get_index_ticker_name
+
 TODAY = datetime.now()
 FMT = "%Y%m%d"
 
