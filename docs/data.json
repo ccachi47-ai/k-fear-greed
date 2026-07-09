@@ -1,7 +1,7 @@
 {
-  "updated": "2026-07-09 15:06",
-  "score": 50,
-  "label": "중립",
+  "updated": "2026-07-09 15:13",
+  "score": 55,
+  "label": "탐욕",
   "indicators": {
     "momentum": {
       "name": "시장 모멘텀 (코스피 vs 125일선)",
@@ -9,24 +9,24 @@
       "detail": "코스피 7,292 / 125일선 대비 +12.9%"
     },
     "strength": {
-      "name": "주가 강도 (52주 신고/신저)",
-      "score": null,
-      "detail": null
+      "name": "주가 강도 (52주 밴드 내 위치)",
+      "score": 70,
+      "detail": "52주 밴드 내 위치 70% (저점 3,054~고점 9,115)"
     },
     "breadth": {
-      "name": "시장 폭 (ADR 20일)",
-      "score": null,
-      "detail": null
+      "name": "시장 폭 (20일 상승일 비율)",
+      "score": 50,
+      "detail": "최근 20일 상승일 비율 50% (코스피+코스닥)"
     },
     "putcall": {
-      "name": "풋/콜 비율 (K200 옵션)",
+      "name": "풋/콜 비율 (K200 옵션·수동)",
       "score": null,
       "detail": null
     },
     "vol": {
-      "name": "변동성 (VKOSPI vs 50일 평균)",
-      "score": null,
-      "detail": null
+      "name": "변동성 (VKOSPI/실현변동성)",
+      "score": 57,
+      "detail": "실현변동성 20일/100일 대비 +12% (VKOSPI 대체)"
     },
     "safehaven": {
       "name": "안전자산 수요 (주식 vs 국채)",
@@ -47,7 +47,7 @@
   "history": [
     {
       "date": "2026-07-09",
-      "score": 50
+      "score": 55
     }
   ]
 }
