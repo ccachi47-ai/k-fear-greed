@@ -1,12 +1,12 @@
 {
-  "updated": "2026-07-09 14:28",
-  "score": null,
-  "label": null,
+  "updated": "2026-07-09 15:06",
+  "score": 50,
+  "label": "중립",
   "indicators": {
     "momentum": {
       "name": "시장 모멘텀 (코스피 vs 125일선)",
-      "score": null,
-      "detail": null
+      "score": 100,
+      "detail": "코스피 7,292 / 125일선 대비 +12.9%"
     },
     "strength": {
       "name": "주가 강도 (52주 신고/신저)",
@@ -30,8 +30,8 @@
     },
     "safehaven": {
       "name": "안전자산 수요 (주식 vs 국채)",
-      "score": null,
-      "detail": null
+      "score": 0,
+      "detail": "주식-채권 20일 수익률차 -6.8%p"
     },
     "credit": {
       "name": "크레딧 스프레드 (BBB- - 국고3년)",
@@ -44,5 +44,10 @@
       "detail": null
     }
   },
-  "history": []
+  "history": [
+    {
+      "date": "2026-07-09",
+      "score": 50
+    }
+  ]
 }
