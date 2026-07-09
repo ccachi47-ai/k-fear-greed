@@ -2,5 +2,6 @@
   "_설명": "자동화가 어려운 지표의 수동 입력값. null이면 해당 지표는 평균에서 제외됩니다.",
   "pcr": null,
   "highs": null,
-  "lows": null
+  "lows": null,
+  "adr": null
 }
